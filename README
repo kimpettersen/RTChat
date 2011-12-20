@@ -1,0 +1,14 @@
+A simple app that lets you talk to a group of people without being logged in or registered
+to any social network.
+
+It aims to be an easy way to have a "short" conversation with a group of people without 
+registering or installing anything on your computer or device.
+
+Simply press "Start chat" and you will be in your own private chat room. Share your given URL
+with the people you want to talk to and you can have a private conversation with them.
+
+As you type, everyone can see what everyone is typing, so it will be as close you can get 
+to a real conversation. (Without using video or voice conversation)
+
+This project started Dec 18 2011 and was inspired by twitter-wave.no.de wich I worked on during
+#hackmtl Dec 2011.

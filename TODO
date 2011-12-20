@@ -1,0 +1,6 @@
+Add :
+IE 8 support
+<!--[if lt IE 8]>
+  <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
+<![endif]-->
+
