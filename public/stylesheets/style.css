@@ -83,6 +83,7 @@ html {
     margin:2% 1% 0% 0%;
     background:#ffb273;
     min-height:600px;
+    overflow:auto;
 
 }
 
@@ -103,7 +104,7 @@ html {
     padding:20px;
     background:#ffb273;
     height:478px;
-    
+    overflow:auto;
 }
 
 .messageBox {
@@ -111,7 +112,7 @@ html {
 
 }
 
-.messageBox input {
+.messageBox input{
     width:95%;
     padding:2%;
     font-size:25px;

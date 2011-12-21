@@ -28,10 +28,9 @@ var ChatWindow = new function() {
 };
 
 $(document).ready(function() {
-    var chatButton = document.getElementById('chatButton');
-        chatButton.addEventListener('click', function(){
-            
-        }, false);
+
+
+
 /*
     //For changeing the colors on Hover
     $('#chatButton').hover(
