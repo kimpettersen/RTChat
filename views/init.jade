@@ -1,4 +1,7 @@
+script(src='/javascripts/init.js')
+
 div.container#container
   form(method='POST', action='init')
-    input(type='text', name='chatName')
-    input(type='submit')
+    input(type='text', name='chatName').initBox
+    input(type='submit').initButton
+  button#generate.initButton Generate secret chat

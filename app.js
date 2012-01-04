@@ -62,7 +62,7 @@ var chat = io.sockets.on('connection', function(socket) {
 // Routes
 //This one will be replaced later
 app.get('/', function(req, res){
-    res.render('index', {
+    res.render('init', {
        title : 'RealTime Chat' 
     });
 });
@@ -76,16 +76,17 @@ app.get('/init', function(req, res){
 
 //Receives the name(id) of the chat
 app.post('/init', function(req, res){
-    console.log('REceived data from init.jade: ' + req.body.chatName);
+    console.log('Received data from init.jade: ' + req.body.chatName);
+    res.redirect('/chat/' + req.body.chatName)
 });
-
+/*
 //Render the chat
 app.get('/chat', function(req, res){
     res.render('chat', {
        title : 'RealTime Chat' 
     });
 });
-
+*/
 app.get(/^\/chat?(?:\/(\w+))?/, function(req, res){
     res.render('chat', {
        title : req.params[0]

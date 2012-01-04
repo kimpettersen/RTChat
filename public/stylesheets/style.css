@@ -121,3 +121,15 @@ html {
     border-radius: 10px;
     
 }
+
+.initBox {
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    width:600px;
+    font-size:25px;
+    padding:2%;
+}
+
+.initButton {
+    font-size:25px;
+}
