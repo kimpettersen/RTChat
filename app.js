@@ -31,84 +31,75 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
-var users = []
 
 //Sockets
+var allUsers = [];
+
 var simple = io
   .sockets
   .on('connection', function(socket) {
-    //Handle username
-    socket.on('username', function(data) {
-        name = data
-        for (i in users) {
-            if (name === users[i]) {
-                socket.emit('userStatus', {userStatus: false})
-                name = false;
-            }
-        }
-        if (name) {
-            users.push(data);
-            console.log('Users logged in: ' + users);
-            socket.emit('userStatus', { userStatus : true });
-        }
-    });
+      socket.on('RTUsers', function(data) {
+   
+          username = data.username;
+
+          //temporary hack to add username to list if it is not in the list
+          allUsers.push(username);
+
+          //JSON containing username, list of all users and the messsage.
+          res = {'username' : username,
+                 'allUsers' : allUsers
+          };
+          
+          socket.emit('RTUsers', res);
+          console.log('Emited: ' + res)  
+        });
     
-    //All users
-    socket.emit('allUsers', users);
-    console.log('Sent list of logged in users: ' + users );
-    
-    //The messages
-    socket.on('message', function(data) {
-      console.log('Received data: ' + data)
-      socket.emit('message', {
-         message : { 'message' : data.msg, 
-                    'username' : data.username
-                    }
-         
-      });
-      
-      //Broadcast message to everyone
-      socket.broadcast.emit('message', {
-          message : { 'message' : data.msg, 
-                     'username' : data.username
-                     }
-      });
+        socket.on('RTMessage', function(data){
+            var msg = {
+                    'message' : data.message,
+                    'user' : data.user
+                }
+            socket.emit('RTMessage', msg);
+            socket.broadcast.emit('RTMessage', msg);
+        });
     });
-    
-    socket.on('disconnect', function() {
-      // handle disconnect
-    });
-  });
 
 // Routes
-
+//This one will be replaced later
 app.get('/', function(req, res){
     res.render('index', {
        title : 'RealTime Chat' 
     });
 });
 
+//The new index route when that starts working
+app.get('/init', function(req, res){
+    res.render('init', {
+       title : 'RealTime Chat' 
+    });
+});
+
+
+
+//Render the chat
 app.get('/chat', function(req, res){
-    /*
-    1. Create unique ID
-    2. Create a chat session
-    3. Save Session in Redis
-    4. Redirect to right chat
-    */
     res.render('chat', {
        title : 'RealTime Chat' 
     });
 });
 
-app.get('/chat/:id', function(req, res){
-    /*
-    1. if session
-            get session
-        else
-            create session
-    2. render a chat window with the right session
-    */
+//New chat renderer, disabled right now
+/*
+app.get(/^\/chat?(?:\/(\w+))?/, function(req, res){
+    res.render('chat', {
+       title : req.params[0]
+    });
 });
+*/
+
+generateID = function() {
+
+};
 
 app.listen(8000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

@@ -51,6 +51,7 @@ html {
 }
 
 .chatButton a {
+    dis
     text-decoration:none;
     display: table-cell;
     vertical-align: middle;
@@ -64,7 +65,7 @@ html {
 
 .chatButton a:hover {
     color:#bf7130;   
-    
+
 }
 
 .chatButtonClicked {

@@ -1,0 +1,69 @@
+$(document).ready(function() {
+    var username = prompt("Please enter your username","Username");
+    var socket = io.connect();
+
+    socket.on('connect', function() {
+        var chat = $('#chatWindow');
+        var usr = $('#users');
+
+        chat.append('<em>Connected</em><br/>');
+        socket.on('RTData', function(data))
+            var allUsers = data.allUsers;
+            var username = data.username;
+            var message = data.message;
+        
+
+            chat.append('<p><b>' + username + ': </b>' + message + '</p>').animate({
+                scrollTop: chat.get(0).scrollHeight
+            }, 10);
+            
+            //Better to open a new connection for this? What is faster? When does socket io communicated?
+            for (i in allUsers) {
+                usr.append('<p>' + users[i] + '</p>'); 
+            }
+        
+        socket.emit('username', username);
+        socket.on('userStatus', function(status){ 
+           //Set the right username
+            });
+    });
+
+    //set focus to message-box
+    $('#message-box').focus();
+
+/*
+    socket.on('connect', function () {
+      socket.emit('message', value);
+    });
+
+*/
+    socket.on('allUsers', function(users){
+        var usr = $('#users');
+        for (i in users) {
+            usr.append(users[i] + '<br />') 
+        }
+    });
+
+    socket.on('message', function (data) {
+        //add element first
+        if (data === ''){
+            //clear message box
+        }
+        else {
+            var chat = $('#chatWindow')
+            //Consider activating this
+            //var message = prepareMsg(msg.message);
+            chat.append('<p><b>' + data.message.username + ': </b>' + data.message.message + '</p>').animate({
+                scrollTop: chat.get(0).scrollHeight
+                }, 10);
+            }
+    });
+    
+    $('#message-box').keypress(function(e) {
+        if (e.keyCode == 13){// || e.keyCode == 108) {
+            var value = $(this).val();        
+            socket.emit('message', {'msg' : value, 'username' : username });
+            $(this).val('');
+        }
+    });
+});

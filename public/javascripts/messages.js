@@ -1,70 +1,59 @@
 $(document).ready(function() {
-    var username = prompt("Please enter your username","Username");
     var socket = io.connect();
 
-    socket.on('connect', function() {
-        $('#chatWindow').append('<em>Connected</em><br/>');
-        //Place for a callback??
-        socket.emit('username', username);
-        socket.on('userStatus', function(status){ 
-           //Set the right username
-            });
-    });
+$('#chatWindow').append('<a href="#">HIme</a>');
 
     //set focus to message-box
     $('#message-box').focus();
-
-/*
-    socket.on('connect', function () {
-      socket.emit('message', value);
-    });
-
-*/
-    socket.on('allUsers', function(users){
-        var usr = $('#users');
-        for (i in users) {
-            usr.append(users[i] + '<br />') 
-        }
-    });
-
-    socket.on('message', function (msg) {
-        //add element first
-        if (msg === ''){
-            //clear message box
-        }
-        else {
-            var chat = $('#chatWindow')
-            //Consider activating this
-            //var message = prepareMsg(msg.message);
-            chat.append('<b>' + msg.message.username + ': </b>' + msg.message.message + '<br>').animate({
-                scrollTop: chat.get(0).scrollHeight
-                }, 10);
-            }
-    });
     
+    //The main connection socket
+    socket.on('connect', function() {
+
+        //Set username if it doesn't exist
+        if (!username){
+        var username = prompt("Please enter your username","Username");
+        socket.emit('RTUsers', {
+            'username' : username
+            });
+        }
+
+        //Set the div's we are using as variables
+        var chat = $('#chatWindow');
+        var usr = $('#users');
+
+        //Append a message that confirm the connection
+        chat.append('<em>Connected</em><br/>');
+
+        //Listen on RTUsers and keep logged in users up to data
+        socket.on('RTUsers', function(data){
+            //Set local variables
+            var allUsers = data.allUsers;
+            //Better to open a new connection for this? What is faster? When does socket io communicated?
+            for (i in allUsers) {
+                usr.append('<p>' + allUsers[i] + '</p>'); 
+            }
+        });
+        
+        //Listen to messages and updates chatWindo      1   3q
+        socket.on('RTMessage', function(data) {
+                var message = data.message;
+                var user = data.user;
+                //Append who sent the message and what it was.
+                chat.append('<p><b>' + user + ': </b>' + message + '</p>').animate({
+                    scrollTop: chat.get(0).scrollHeight
+                    }, 10);
+            });
+        
     $('#message-box').keypress(function(e) {
         if (e.keyCode == 13){// || e.keyCode == 108) {
-            var value = $(this).val();        
-            socket.emit('message', {'msg' : value, 'username' : username });
+            var msg = $(this).val();
+            res = {
+                    'message' : msg,
+                    'user' : username
+            };
+            socket.emit('RTMessage', res);
             $(this).val('');
         }
     });
-    
-    
-    /*
-    //may be redundant
-    var prepareMsg = function(msg) {
-        //Fix words that are longer than 
-        var splitted = msg.message.split('');
-        
-        var res = '';
-        for (i = 0; i < splitted.length; i++){
-            if ((i % 118) === 0 && i != 0) {
-                res += '<br />'
-            }
-            res += splitted[i];
-        }
-        return res
-    }
-*/
+  });
 });

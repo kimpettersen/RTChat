@@ -1,10 +1,1 @@
-Add :
-IE 8 support
-<!--[if lt IE 8]>
-  <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
-<![endif]-->
-
 Escape HTML and secure the things
-
-Save username in session, this is not a good solution
-
