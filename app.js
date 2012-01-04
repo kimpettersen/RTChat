@@ -33,34 +33,29 @@ app.configure('production', function(){
 
 
 //Sockets
-var allUsers = [];
-
-var simple = io
-  .sockets
-  .on('connection', function(socket) {
-      socket.on('RTUsers', function(data) {
-   
-          username = data.username;
-
-          //temporary hack to add username to list if it is not in the list
-          allUsers.push(username);
-
-          //JSON containing username, list of all users and the messsage.
-          res = {'username' : username,
-                 'allUsers' : allUsers
-          };
-          
-          socket.emit('RTUsers', res);
-          console.log('Emited: ' + res)  
+var chat = io.sockets.on('connection', function(socket) {
+    console.log('Started a connection');
+      var room = ''
+      socket.on('setUser', function(user, callback){
+          socket.join(user.room);
+          room = user.room;
+          user = user.user
+          callback({msg: 'Welcome to <i>' + room + '</i>, <b>' + user + '</b>'});
+          console.log('Registered: ' + user + ' in ' + room);
+      });
+      
+      //handles the list of all users
+      socket.on('allUsers', function(user) {
+          console.log('Sent list of logged in users: ' + allUsers);
+          socket.broadcast.to(room).send(allUsers);
         });
     
-        socket.on('RTMessage', function(data){
-            var msg = {
-                    'message' : data.message,
-                    'user' : data.user
-                }
-            socket.emit('RTMessage', msg);
-            socket.broadcast.emit('RTMessage', msg);
+        //Handles all the messaged
+        socket.on('message', function(data){
+            console.log('Received a message: ' + data.message + ' from ' + data.user);
+
+            //socket.emit('RTMessage', msg);
+            socket.broadcast.to(room).json.send(data);
         });
     });
 
@@ -79,7 +74,10 @@ app.get('/init', function(req, res){
     });
 });
 
-
+//Receives the name(id) of the chat
+app.post('/init', function(req, res){
+    console.log('REceived data from init.jade: ' + req.body.chatName);
+});
 
 //Render the chat
 app.get('/chat', function(req, res){
@@ -88,18 +86,11 @@ app.get('/chat', function(req, res){
     });
 });
 
-//New chat renderer, disabled right now
-/*
 app.get(/^\/chat?(?:\/(\w+))?/, function(req, res){
     res.render('chat', {
        title : req.params[0]
     });
 });
-*/
-
-generateID = function() {
-
-};
 
 app.listen(8000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
