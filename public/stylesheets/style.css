@@ -1,5 +1,7 @@
 html {
     background-color:#ff7400;
+    font-family: Helvetica;
+    
 
 }
 .container {
@@ -42,36 +44,8 @@ html {
 .shadowBox {
     -moz-border-radius: 10px;
     border-radius: 10px;
-    /*
-    -moz-box-shadow: -5px -5px -5px #a64b00;
-    -webkit-box-shadow: 5px 5px 5px #a64b00;
-    box-shadow: 5px 5px 5px #a64b00;
-*/
-    
 }
 
-.chatButton a {
-    dis
-    text-decoration:none;
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-    font-size:70px;
-    width:70%;
-    color:#a64b00;
-    text-shadow: 1px 1px 1px #a64b00;
-    
-}
-
-.chatButton a:hover {
-    color:#bf7130;   
-
-}
-
-.chatButtonClicked {
-    box-shadow: 15px 15px 10px #a64b00;
-     
-}
 
 .content {
     min-height:100%;
@@ -83,9 +57,14 @@ html {
     width:24%;
     margin:2% 1% 0% 0%;
     background:#ffb273;
-    min-height:600px;
+    height:600px;
     overflow:auto;
 
+}
+
+.userWindow {
+    padding:10px;
+    overflow:auto;
 }
 
 .users h2 {
@@ -117,19 +96,66 @@ html {
     width:95%;
     padding:2%;
     font-size:25px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    
+    -webkit-border-radius: 19px;
+    -moz-border-radius: 19px;
+    border-radius: 19px;
 }
 
 .initBox {
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    width:600px;
-    font-size:25px;
-    padding:2%;
+    width:100%;
+    font-size:40px;
+
+    padding:0 10 0 10;
+    -webkit-border-radius: 19px;
+    -moz-border-radius: 19px;
+    border-radius: 19px;
+
 }
 
-.initButton {
-    font-size:25px;
+.inputField {
+    width:800px;
+    margin:100px auto 0 auto;
 }
+
+
+.initWrapper {
+    padding:40px 0px 0px 0px;
+}
+
+.buttons{
+    margin:0px 20px 0px 0px;
+}
+
+
+/*Used a button creator*/
+.button {
+   border-top: 1px solid #ff9640;
+   background: #bf7030;
+   background: -webkit-gradient(linear, left top, left bottom, from(#a64b00), to(#bf7030));
+   background: -webkit-linear-gradient(top, #a64b00, #bf7030);
+   background: -moz-linear-gradient(top, #a64b00, #bf7030);
+   background: -ms-linear-gradient(top, #a64b00, #bf7030);
+   background: -o-linear-gradient(top, #a64b00, #bf7030);
+   padding: 20px 40px;
+   -webkit-border-radius: 19px;
+   -moz-border-radius: 19px;
+   border-radius: 19px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: #ffb273;
+   font-size: 24px;
+   font-family: Georgia, Serif;
+   text-decoration: none;
+   vertical-align: middle;
+   }
+.button:hover {
+   border-top-color: #a64b00;
+   background: #a64b00;
+   color: #ffb273;
+   }
+.button:active {
+   border-top-color: #a64b00;
+   background: #a64b00;
+   }

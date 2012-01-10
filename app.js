@@ -2,23 +2,17 @@
  * Module dependencies.
  */
 
-var express = require('express')
-var routes = require('./routes')
-//var RedisStore = require('connect-redis')(express);
-var app = require('express').createServer()
+var express = require('express');
+var routes = require('./routes');
+var app = require('express').createServer();
 var io = require('socket.io').listen(app);
 
-
 // Configuration
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  //app.use(express.cookieParser());
-  //app.use(express.bodyParser());
-  //app.use(express.session({ secret: 'cnkas0wfh83js RTChat', store = new RedisStore }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -31,62 +25,79 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
-
 //Sockets
 var chat = io.sockets.on('connection', function(socket) {
-    console.log('Started a connection');
-      var room = ''
+      var room = '';
+
+      //Listener that sets users and broadcasts a message to all the rooms
       socket.on('setUser', function(user, callback){
-          socket.join(user.room);
           room = user.room;
-          user = user.user
-          callback({msg: 'Welcome to <i>' + room + '</i>, <b>' + user + '</b>'});
+          user = user.user;
+          socket.set('username', user);
+          socket.join(room);
+          updateUsers(room);
+          
+          
+          //sends a callback with a welcome message
+          callback(
+                    {
+                        msg: 'Welcome to <i>' + room + '</i>, <b>' + user + '</b>',
+                    });
           console.log('Registered: ' + user + ' in ' + room);
       });
-      
-      //handles the list of all users
-      socket.on('allUsers', function(user) {
-          console.log('Sent list of logged in users: ' + allUsers);
-          socket.broadcast.to(room).send(allUsers);
-        });
+    
+      //Broadcasts and emits an updated list of active users to all the clients
+      var updateUsers = function(room) {
+          var userList = [];
+          var users = io.sockets.clients(room);
+          //Gets the username attached to each socket
+          for (i in users){
+              users[i].get('username', function(err, res){
+                  
+                  //push the username to list of users
+                  userList.push(res);
+                  });
+            }
+
+
+            //result is a array of usernames
+            res = { allUsers: userList };
+            
+            //Need to brascast and emit orelse socket.IO wont send to the user that sent the
+            //update request
+            socket.broadcast.to(room).json.emit('allUsers', res);
+            socket.emit('allUsers', res);            
+      }; 
     
         //Handles all the messaged
         socket.on('message', function(data){
             console.log('Received a message: ' + data.message + ' from ' + data.user);
-
-            //socket.emit('RTMessage', msg);
             socket.broadcast.to(room).json.send(data);
+        });        
+        
+        //Currently logs the socket ID for the disconnected user. May be used later if I wont to go 
+        //away from in-memory storage of online users.
+        socket.on('disconnect', function(data){
+            console.log(socket.id + ' disconnected');
         });
     });
 
 // Routes
-//This one will be replaced later
+
+//Loads the index page of the chat
 app.get('/', function(req, res){
     res.render('init', {
-       title : 'RealTime Chat' 
+       title : 'Create a chat' 
     });
 });
 
-//The new index route when that starts working
-app.get('/init', function(req, res){
-    res.render('init', {
-       title : 'RealTime Chat' 
-    });
-});
-
-//Receives the name(id) of the chat
+//Receives the name of the chat
 app.post('/init', function(req, res){
     console.log('Received data from init.jade: ' + req.body.chatName);
-    res.redirect('/chat/' + req.body.chatName)
+    res.redirect('/chat/' + req.body.chatName);
 });
-/*
-//Render the chat
-app.get('/chat', function(req, res){
-    res.render('chat', {
-       title : 'RealTime Chat' 
-    });
-});
-*/
+
+//returns the title of the chat which is basicly everything after: chat/
 app.get(/^\/chat?(?:\/(\w+))?/, function(req, res){
     res.render('chat', {
        title : req.params[0]

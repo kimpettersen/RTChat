@@ -1,7 +1,11 @@
 script(src='/javascripts/init.js')
 
-div.container#container
-  form(method='POST', action='init')
-    input(type='text', name='chatName').initBox
-    input(type='submit').initButton
-  button#generate.initButton Generate secret chat
+div.content
+    div.inputField
+      form(name="initForm", method='POST', action='init')
+        input(name="chatName", type="text", value="Enter a chat name").messageBox.initBox
+      div.initWrapper
+        span.buttons
+          a(href="javascript:customForm()").button Start Custom Chat
+        span.buttons
+          a(href="javascript:randomForm()").button Generate Random Chat
