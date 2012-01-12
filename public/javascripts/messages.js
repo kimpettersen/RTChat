@@ -10,6 +10,9 @@ $(document).ready(function() {
       //in the current URL
         if (currentChat === null){
             var username = prompt("Please enter your username","Username");
+            while( username === null || username === '') {
+                username = prompt("Invalid username, try again","Username");
+            }
             var room = document.URL.split('chat/')[1];
         }
     
@@ -24,9 +27,9 @@ $(document).ready(function() {
     $('#message-box').keypress(function(e) {
         if (e.keyCode == 13){// || e.keyCode == 108) {
             var msg = $(this).val();
-            $(this).val('');
-            currentChat.emit(msg)
-            }
+                $(this).val('');
+                    currentChat.emit(msg)
+                }
         });
 });
 
@@ -41,7 +44,7 @@ function Chat(){
     this.connect = function(usr, chatRoom) {
 
         //create a connection to the server
-        socket = io.connect();//url to server goes here
+        socket = io.connect('http://thatchat.nodester.com/');//url to server goes here
         
         //Set local variables
         user = usr;
@@ -61,6 +64,7 @@ function Chat(){
 
             //Listener for all incomming messages. Appends them to chatWindow
             socket.on("message", function(message){
+                
                 //fix this JQuery
                 chatWindow.append('<p><b>' + message.user + ': </b>' + message.message + '</p>').animate({
                     scrollTop: chat.get(0).scrollHeight
@@ -85,13 +89,19 @@ function Chat(){
 
     //Function for sending a message
     this.emit = function(msg){
+        
+        message = stripTag(msg);
+        
         //emit the message
-        socket.emit('message', { 'message' : msg, 'user' : user});
+        socket.emit('message', { message : message, user : user});
         
         //Append the message locally right away
         var chatWindow = $('#chatWindow');
-            chatWindow.append('<p><b>' + user + ': </b>' + msg + '</p>').animate({
+            chatWindow.append('<p><b>' + user + ': </b>' + message + '</p>').animate({
             scrollTop: chat.get(0).scrollHeight
         }, 10);
+        function stripTag(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
+        }
     };
 }

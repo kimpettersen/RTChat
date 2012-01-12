@@ -3,7 +3,8 @@ script(src='/javascripts/init.js')
 div.content
     div.inputField
       form(name="initForm", method='POST', action='init')
-        input(name="chatName", type="text", value="Enter a chat name").messageBox.initBox
+        h4.head LOGO
+        input(name="chatName", type="text", value="Chat name", onclick="this.value=''").messageBox.initBox#initBox
       div.initWrapper
         span.buttons
           a(href="javascript:customForm()").button Start Custom Chat

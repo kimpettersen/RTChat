@@ -6,7 +6,13 @@ $(document).ready(function() {
 });
 
 function customForm(){
-       document.initForm.submit();
+        var val = $('#initBox').val();
+        if (val == '' || val == 'Chat name'){
+            alert('Type in a chat name first.');
+        }
+        else {
+            document.initForm.submit();
+        }
    };
 
    function randomForm(){
